@@ -1,0 +1,20 @@
+{
+  "name": "記帳日常",
+  "short_name": "記帳日常",
+  "description": "可愛又實用的日常記帳工具，支援收入、現金支出、信用卡、股票投資與備份。",
+  "lang": "zh-Hant",
+  "start_url": "./pwa.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f7f3ea",
+  "theme_color": "#233f63",
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
