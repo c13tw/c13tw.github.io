@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>我的記帳本</title>
+
+<style>
+:root {
+    --bg: #f6f3ee;
+    --panel: #ffffff;
+    --panel-soft: #faf7f2;
+    --border: #e7ded3;
+    --text: #342d28;
+    --muted: #81756b;
+    --primary: #9b7658;
+    --primary-dark: #7c5d45;
+    --green: #5f8d68;
+    --red: #c16f67;
+    --blue: #6d78a8;
+    --orange: #b78354;
+    --shadow: 0 8px 28px rgba(70, 50, 35, 0.07);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Microsoft JhengHei", "Noto Sans TC", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.header {
+    height: 70px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 36px;
+
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: #ead9c6;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-right {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.app {
+    max-width: 1250px;
+    margin: auto;
+    padding: 32px 24px 60px;
+}
+
+.hero {
+    margin-bottom: 24px;
+}
+
+.hero h1 {
+    margin: 0 0 6px;
+    font-size: 30px;
+}
+
+.hero p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.stat-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.stat-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--panel-soft);
+}
+
+.stat-money {
+    margin-top: 10px;
+    font-size: 27px;
+    font-weight: bold;
+}
+
+.income-money {
+    color: var(--green);
+}
+
+.cash-money {
+    color: var(--orange);
+}
+
+.balance-money {
+    color: var(--primary-dark);
+}
+
+.credit-money {
+    color: var(--blue);
+}
+
+.main-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.panel-title h2 {
+    margin: 0;
+    font-size: 19px;
+}
+
+.panel-title span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 13px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field.full {
+    grid-column: 1 / -1;
+}
+
+label {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+input,
+select {
+    width: 100%;
+    padding: 12px 13px;
+    border-radius: 11px;
+    border: 1px solid #ddd2c6;
+    background: #fff;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(155,118,88,0.10);
+}
+
+.primary-btn {
+    width: 100%;
+    border: 0;
+    margin-top: 16px;
+    padding: 13px;
+    border-radius: 12px;
+    background: var(--primary);
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: var(--primary-dark);
+}
+
+.hint {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f7f4fb;
+    color: #746c87;
+    font-size: 12px;
+}
+
+.category-add {
+    display: flex;
+    gap: 8px;
+}
+
+.category-add input {
+    flex: 1;
+}
+
+.small-btn {
+    border: 0;
+    padding: 0 14px;
+    border-radius: 11px;
+    background: #7f9473;
+    color: white;
+    cursor: pointer;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.tag {
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: #f0e8de;
+    font-size: 13px;
+}
+
+.tag button {
+    border: none;
+    background: transparent;
+    color: #a95f59;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.tools {
+    margin-top: 22px;
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+}
+
+.tool-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.secondary-btn {
+    padding: 11px;
+    border-radius: 11px;
+    border: 1px solid var(--border);
+    background: var(--panel-soft);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.table-panel {
+    background: var(--panel);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 22px;
+}
+
+.table-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.table-head h2 {
+    margin: 0;
+    font-size: 19px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+th {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: left;
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+td {
+    padding: 14px 10px;
+    font-size: 14px;
+    border-bottom: 1px solid #f0ebe5;
+}
+
+.type-badge {
+    display: inline-flex;
+    padding: 5px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.badge-income {
+    background: #e9f3ea;
+    color: #54765a;
+}
+
+.badge-cash {
+    background: #f6eee4;
+    color: #996c42;
+}
+
+.badge-credit {
+    background: #ececf7;
+    color: #62689b;
+}
+
+.amount-income {
+    color: var(--green);
+    font-weight: bold;
+}
+
+.amount-out {
+    font-weight: bold;
+}
+
+.delete-btn {
+    border: none;
+    background: #faeceb;
+    color: #ac5e57;
+    padding: 7px 9px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.empty {
+    text-align: center;
+    padding: 35px;
+    color: var(--muted);
+}
+
+@media(max-width: 900px) {
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 600px) {
+    .header {
+        padding: 0 16px;
+    }
+
+    .header-right {
+        display: none;
+    }
+
+    .app {
+        padding: 20px 12px 40px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-money {
+        font-size: 22px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .field.full {
+        grid-column: auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">
+        <div class="logo-icon">🧸</div>
+        我的記帳本
+    </div>
+
+    <div class="header-right">
+        簡單記錄每一筆生活
+    </div>
+</header>
+
+<main class="app">
+
+    <div class="hero">
+        <h1>財務總覽</h1>
+        <p id="monthTitle"></p>
+    </div>
+
+    <section class="stats">
+
+        <div class="stat-card">
+            <div class="stat-top">
+                本月收入
+                <div class="stat-icon">💰</div>
+            </div>
+
+            <div class="stat-money income-money">
+                $<span id="incomeTotal">0</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                現金支出
+                <div class="stat-icon">💵</div>
+            </div>
+
+            <div class="stat-money cash-money">
+                $<span id="cashTotal">0</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                目前剩餘
+                <div class="stat-icon">🌿</div>
+            </div>
+
+            <div class="stat-money balance-money">
+                $<span id="balance">0</span>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-top">
+                信用卡刷卡
+                <div class="stat-icon">💳</div>
+            </div>
+
+            <div class="stat-money credit-money">
+                $<span id="creditTotal">0</span>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="main-grid">
+
+        <div class="panel">
+
+            <div class="panel-title">
+                <h2>新增紀錄</h2>
+                <span>今天花了什麼？</span>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="field">
+                    <label>日期</label>
+                    <input type="date" id="date">
+                </div>
+
+                <div class="field">
+                    <label>類型</label>
+
+                    <select id="type" onchange="updateForm()">
+                        <option value="收入">💰 收入</option>
+                        <option value="現金支出">💵 現金支出</option>
+                        <option value="信用卡">💳 信用卡消費</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>項目</label>
+                    <input
+                        type="text"
+                        id="item"
+                        placeholder="例如：午餐"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>金額</label>
+                    <input
+                        type="number"
+                        id="amount"
+                        placeholder="0"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>分類</label>
+                    <select id="category"></select>
+                </div>
+
+                <div
+                    class="field"
+                    id="cardField"
+                    style="display:none"
+                >
+                    <label>信用卡</label>
+
+                    <select id="creditCard">
+                        <option value="國泰">國泰</option>
+                        <option value="玉山">玉山</option>
+                        <option value="台新">台新</option>
+                        <option value="富邦">富邦</option>
+                        <option value="中信">中信</option>
+                    </select>
+                </div>
+
+                <div class="field full">
+                    <label>備註</label>
+
+                    <input
+                        type="text"
+                        id="note"
+                        placeholder="可以不填"
+                    >
+                </div>
+
+            </div>
+
+            <button
+                class="primary-btn"
+                onclick="addTransaction()"
+            >
+                ＋ 新增紀錄
+            </button>
+
+            <div class="hint">
+                💳 信用卡消費只做刷卡紀錄，不會扣除目前剩餘金額。
+            </div>
+
+        </div>
+
+        <div class="panel">
+
+            <div class="panel-title">
+                <h2>支出分類</h2>
+                <span>自己設定</span>
+            </div>
+
+            <div class="category-add">
+                <input
+                    id="newCategory"
+                    type="text"
+                    placeholder="例如：貓咪"
+                >
+
+                <button
+                    class="small-btn"
+                    onclick="addCategory()"
+                >
+                    新增
+                </button>
+            </div>
+
+            <div class="tags" id="categoryList"></div>
+
+            <div class="tools">
+
+                <div class="panel-title">
+                    <h2>資料備份</h2>
+                </div>
+
+                <div class="tool-buttons">
+
+                    <button
+                        class="secondary-btn"
+                        onclick="exportData()"
+                    >
+                        📤 匯出備份
+                    </button>
+
+                    <button
+                        class="secondary-btn"
+                        onclick="document.getElementById('importFile').click()"
+                    >
+                        📥 匯入備份
+                    </button>
+
+                </div>
+
+                <input
+                    type="file"
+                    id="importFile"
+                    accept=".json"
+                    style="display:none"
+                    onchange="importData(event)"
+                >
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="table-panel">
+
+        <div class="table-head">
+            <h2>最近記帳紀錄</h2>
+        </div>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>日期</th>
+                        <th>類型</th>
+                        <th>項目</th>
+                        <th>分類</th>
+                        <th>信用卡</th>
+                        <th>金額</th>
+                        <th>備註</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody id="transactionList"></tbody>
+
+            </table>
+
+        </div>
+
+        <div
+            id="emptyMessage"
+            class="empty"
+        >
+            還沒有記帳紀錄 🌱
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+
+let transactions =
+JSON.parse(
+    localStorage.getItem("myBookTransactions")
+) || [];
+
+let categories =
+JSON.parse(
+    localStorage.getItem("myBookCategories")
+) || [
+    "餐飲",
+    "交通",
+    "購物",
+    "娛樂",
+    "生活",
+    "信用卡繳款",
+    "其他"
+];
+
+const now = new Date();
+
+document.getElementById("date").value =
+formatDate(now);
+
+document.getElementById("monthTitle").textContent =
+`${now.getFullYear()} 年 ${now.getMonth() + 1} 月`;
+
+function formatDate(date) {
+
+    const y = date.getFullYear();
+
+    const m =
+    String(date.getMonth() + 1)
+    .padStart(2,"0");
+
+    const d =
+    String(date.getDate())
+    .padStart(2,"0");
+
+    return `${y}-${m}-${d}`;
+}
+
+function updateForm() {
+
+    const type =
+    document.getElementById("type").value;
+
+    const cardField =
+    document.getElementById("cardField");
+
+    cardField.style.display =
+    type === "信用卡"
+    ? "flex"
+    : "none";
+
+    renderCategorySelect();
+}
+
+function renderCategorySelect() {
+
+    const type =
+    document.getElementById("type").value;
+
+    const select =
+    document.getElementById("category");
+
+    select.innerHTML = "";
+
+    let list;
+
+    if(type === "收入") {
+
+        list = [
+            "薪水",
+            "獎金",
+            "退款",
+            "其他收入"
+        ];
+
+    } else {
+
+        list = categories;
+    }
+
+    list.forEach(category => {
+
+        const option =
+        document.createElement("option");
+
+        option.value = category;
+        option.textContent = category;
+
+        select.appendChild(option);
+    });
+}
+
+function addCategory() {
+
+    const input =
+    document.getElementById("newCategory");
+
+    const name =
+    input.value.trim();
+
+    if(!name) {
+        alert("請輸入分類名稱");
+        return;
+    }
+
+    if(categories.includes(name)) {
+        alert("這個分類已經存在");
+        return;
+    }
+
+    categories.push(name);
+
+    saveCategories();
+
+    input.value = "";
+
+    renderCategoryManager();
+    renderCategorySelect();
+}
+
+function deleteCategory(name) {
+
+    const used =
+    transactions.some(
+        transaction =>
+        transaction.category === name
+    );
+
+    if(used) {
+        alert("已有紀錄使用這個分類，因此不能刪除");
+        return;
+    }
+
+    categories =
+    categories.filter(
+        category =>
+        category !== name
+    );
+
+    saveCategories();
+
+    renderCategoryManager();
+    renderCategorySelect();
+}
+
+function saveCategories() {
+
+    localStorage.setItem(
+        "myBookCategories",
+        JSON.stringify(categories)
+    );
+}
+
+function renderCategoryManager() {
+
+    const list =
+    document.getElementById("categoryList");
+
+    list.innerHTML = "";
+
+    categories.forEach(category => {
+
+        const tag =
+        document.createElement("div");
+
+        tag.className = "tag";
+
+        const text =
+        document.createElement("span");
+
+        text.textContent = category;
+
+        const button =
+        document.createElement("button");
+
+        button.textContent = "×";
+
+        button.onclick = () =>
+        deleteCategory(category);
+
+        tag.appendChild(text);
+        tag.appendChild(button);
+
+        list.appendChild(tag);
+    });
+}
+
+function addTransaction() {
+
+    const date =
+    document.getElementById("date").value;
+
+    const type =
+    document.getElementById("type").value;
+
+    const item =
+    document.getElementById("item")
+    .value.trim();
+
+    const amount =
+    Number(
+        document.getElementById("amount").value
+    );
+
+    const category =
+    document.getElementById("category").value;
+
+    const creditCard =
+    type === "信用卡"
+    ? document.getElementById("creditCard").value
+    : "";
+
+    const note =
+    document.getElementById("note")
+    .value.trim();
+
+    if(
+        !date ||
+        !item ||
+        !amount ||
+        amount <= 0
+    ) {
+        alert("請輸入完整的日期、項目和金額");
+        return;
+    }
+
+    transactions.push({
+
+        id:
+        Date.now() +
+        Math.floor(Math.random() * 1000),
+
+        date,
+        type,
+        item,
+        amount,
+        category,
+        creditCard,
+        note
+
+    });
+
+    saveTransactions();
+
+    document.getElementById("item").value = "";
+    document.getElementById("amount").value = "";
+    document.getElementById("note").value = "";
+
+    renderTransactions();
+}
+
+function deleteTransaction(id) {
+
+    if(
+        !confirm("確定要刪除這筆紀錄嗎？")
+    ) {
+        return;
+    }
+
+    transactions =
+    transactions.filter(
+        transaction =>
+        transaction.id !== id
+    );
+
+    saveTransactions();
+    renderTransactions();
+}
+
+function saveTransactions() {
+
+    localStorage.setItem(
+        "myBookTransactions",
+        JSON.stringify(transactions)
+    );
+}
+
+function renderTransactions() {
+
+    const tbody =
+    document.getElementById("transactionList");
+
+    const empty =
+    document.getElementById("emptyMessage");
+
+    tbody.innerHTML = "";
+
+    empty.style.display =
+    transactions.length === 0
+    ? "block"
+    : "none";
+
+    const sorted =
+    [...transactions]
+    .sort((a,b) => {
+
+        if(a.date === b.date) {
+            return b.id - a.id;
+        }
+
+        return (
+            new Date(b.date) -
+            new Date(a.date)
+        );
+    });
+
+    sorted.forEach(transaction => {
+
+        const row =
+        document.createElement("tr");
+
+        let badgeClass = "";
+        let typeName = "";
+
+        if(transaction.type === "收入") {
+            badgeClass = "badge-income";
+            typeName = "💰 收入";
+        }
+
+        if(transaction.type === "現金支出") {
+            badgeClass = "badge-cash";
+            typeName = "💵 現金";
+        }
+
+        if(transaction.type === "信用卡") {
+            badgeClass = "badge-credit";
+            typeName = "💳 信用卡";
+        }
+
+        row.innerHTML = `
+
+        <td>${transaction.date}</td>
+
+        <td>
+            <span class="type-badge ${badgeClass}">
+                ${typeName}
+            </span>
+        </td>
+
+        <td>${escapeHTML(transaction.item)}</td>
+
+        <td>${escapeHTML(transaction.category)}</td>
+
+        <td>
+            ${
+                transaction.creditCard
+                ? escapeHTML(transaction.creditCard)
+                : "－"
+            }
+        </td>
+
+        <td>
+            ${
+                transaction.type === "收入"
+                ?
+                `<span class="amount-income">
+                    +$${transaction.amount.toLocaleString()}
+                </span>`
+                :
+                `<span class="amount-out">
+                    $${transaction.amount.toLocaleString()}
+                </span>`
+            }
+        </td>
+
+        <td>
+            ${
+                transaction.note
+                ? escapeHTML(transaction.note)
+                : "－"
+            }
+        </td>
+
+        <td>
+            <button
+                class="delete-btn"
+                onclick="deleteTransaction(${transaction.id})"
+            >
+                刪除
+            </button>
+        </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    calculateTotals();
+}
+
+function calculateTotals() {
+
+    const current =
+    new Date();
+
+    const currentYear =
+    current.getFullYear();
+
+    const currentMonth =
+    current.getMonth();
+
+    const monthly =
+    transactions.filter(transaction => {
+
+        const date =
+        new Date(
+            transaction.date +
+            "T00:00:00"
+        );
+
+        return (
+            date.getFullYear() === currentYear &&
+            date.getMonth() === currentMonth
+        );
+    });
+
+    const income =
+    monthly
+    .filter(item =>
+        item.type === "收入"
+    )
+    .reduce(
+        (sum,item) =>
+        sum + item.amount,
+        0
+    );
+
+    const cash =
+    monthly
+    .filter(item =>
+        item.type === "現金支出"
+    )
+    .reduce(
+        (sum,item) =>
+        sum + item.amount,
+        0
+    );
+
+    const credit =
+    monthly
+    .filter(item =>
+        item.type === "信用卡"
+    )
+    .reduce(
+        (sum,item) =>
+        sum + item.amount,
+        0
+    );
+
+    const balance =
+    income - cash;
+
+    document.getElementById("incomeTotal")
+    .textContent =
+    income.toLocaleString();
+
+    document.getElementById("cashTotal")
+    .textContent =
+    cash.toLocaleString();
+
+    document.getElementById("creditTotal")
+    .textContent =
+    credit.toLocaleString();
+
+    document.getElementById("balance")
+    .textContent =
+    balance.toLocaleString();
+}
+
+function exportData() {
+
+    const backup = {
+        transactions,
+        categories,
+        exportDate:
+        new Date().toISOString()
+    };
+
+    const blob =
+    new Blob(
+        [
+            JSON.stringify(
+                backup,
+                null,
+                2
+            )
+        ],
+        {
+            type: "application/json"
+        }
+    );
+
+    const url =
+    URL.createObjectURL(blob);
+
+    const link =
+    document.createElement("a");
+
+    link.href = url;
+
+    link.download =
+    `記帳備份_${formatDate(new Date())}.json`;
+
+    link.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+
+    const file =
+    event.target.files[0];
+
+    if(!file) {
+        return;
+    }
+
+    const reader =
+    new FileReader();
+
+    reader.onload =
+    function(e) {
+
+        try {
+
+            const data =
+            JSON.parse(
+                e.target.result
+            );
+
+            if(
+                !Array.isArray(data.transactions) ||
+                !Array.isArray(data.categories)
+            ) {
+                throw new Error();
+            }
+
+            if(
+                !confirm(
+                    "匯入後會取代目前的記帳資料，確定嗎？"
+                )
+            ) {
+                return;
+            }
+
+            transactions =
+            data.transactions;
+
+            categories =
+            data.categories;
+
+            saveTransactions();
+            saveCategories();
+
+            renderCategoryManager();
+            renderCategorySelect();
+            renderTransactions();
+
+            alert("資料匯入完成");
+
+        } catch {
+
+            alert("備份檔格式不正確");
+        }
+    };
+
+    reader.readAsText(file);
+
+    event.target.value = "";
+}
+
+function escapeHTML(text) {
+
+    return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+renderCategoryManager();
+updateForm();
+renderTransactions();
+
+</script>
+
+</body>
+</html>
