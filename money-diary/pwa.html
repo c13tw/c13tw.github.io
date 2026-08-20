@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>記帳日常</title>
+<meta name="theme-color" content="#233f63">
+<meta name="description" content="可愛又實用的日常記帳工具，支援收入、現金支出、信用卡、股票投資與備份。">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="記帳日常">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./app-icon.svg" type="image/svg+xml">
+<style>
+html,body{margin:0;width:100%;height:100%;background:#f7f3ea;overflow:hidden;font-family:"Microsoft JhengHei",system-ui,sans-serif}
+#appFrame{display:block;width:100%;height:100%;border:0;background:#f7f3ea}
+#installBar{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9999;display:none;align-items:center;gap:10px;padding:10px 12px 10px 16px;border-radius:18px;background:rgba(35,63,99,.96);color:#fff;box-shadow:0 12px 32px rgba(18,36,58,.25);backdrop-filter:blur(12px)}
+#installBar.show{display:flex}
+#installBar span{font-size:14px;font-weight:800;white-space:nowrap}
+#installBtn,#closeInstall{border:0;cursor:pointer;font-weight:900}
+#installBtn{padding:9px 12px;border-radius:12px;background:#fff;color:#233f63}
+#closeInstall{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:18px}
+@media(max-width:560px){#installBar{left:12px;right:12px;transform:none;justify-content:center}#installBar span{white-space:normal}}
+</style>
+</head>
+<body>
+<iframe id="appFrame" src="./index.html" title="記帳日常"></iframe>
+<div id="installBar">
+  <span>📲 把「記帳日常」裝到主畫面</span>
+  <button id="installBtn">安裝</button>
+  <button id="closeInstall" aria-label="關閉">×</button>
+</div>
+<script>
+let deferredPrompt=null;
+const bar=document.getElementById('installBar');
+const installBtn=document.getElementById('installBtn');
+const closeBtn=document.getElementById('closeInstall');
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  bar.classList.add('show');
+});
+
+installBtn.addEventListener('click',async()=>{
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt=null;
+    bar.classList.remove('show');
+    return;
+  }
+  alert('iPhone 請用 Safari 開啟這個頁面，點「分享」→「加入主畫面」。');
+});
+
+closeBtn.addEventListener('click',()=>bar.classList.remove('show'));
+window.addEventListener('appinstalled',()=>bar.classList.remove('show'));
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(console.warn);
+  });
+}
+</script>
+</body>
+</html>
